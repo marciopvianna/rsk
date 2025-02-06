@@ -90,11 +90,12 @@ else {
             </thead>
             <tbody>
                 <?php
-                $con = mysqli_connect('localhost', 'delgrande', 'dege01', 'marcio');
+                // $con = mysqli_connect('localhost', 'delgrande', 'dege01', 'marcio');
+                $con = mysqli_connect('localhost', 'root', '', 'rsk');
                 if (!$con) {
                     die('Não foi possível conectar: ' . mysqli_error($con));
                 }
-                mysqli_select_db($con, "ajax_demo");
+                mysqli_select_db($con, "rsk");
 //        $sql = "SELECT * FROM notas WHERE juiz='$login_session' ORDER BY id_nota DESC";
                 $sql = "SELECT t1.hora,t1.juiz,t1.round,t1.heat,t2.nome,t1.onda,t1.nota FROM (notas as t1, atletas as t2) WHERE t2.id_atletas=t1.atleta AND t1.juiz='$login_session' ORDER BY t1.id_nota DESC";
                 $result = mysqli_query($con, $sql);

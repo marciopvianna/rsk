@@ -4,31 +4,37 @@ session_start();
 
 $error = NULL;
 
+// Estabelecer conexão com o banco de dados
+$db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+if (!$db) {
+    die('Não foi possível conectar: ' . mysqli_error($db));
+}
+
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 // username and password sent from form 
 
 $myusername = mysqli_real_escape_string($db,$_POST['username']);
 $mypassword = mysqli_real_escape_string($db,$_POST['password']); 
 
-$sql = "SELECT id_juiz FROM juizes WHERE nome = '$myusername' and senha = '$mypassword'";
-error_log($sql);
-$result = mysqli_query($db,$sql);
-error_log($result);
-$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-error_log($row);
-$active = $row['active'];
+    $sql = "SELECT id_juiz FROM juizes WHERE nome = '$myusername' and senha = '$mypassword'";
+        error_log($sql);
+        $result = mysqli_query($db, $sql);
+        
+        if ($result) {
+            $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+            error_log(print_r($row, true)); // Log the row as a string
+            $count = mysqli_num_rows($result);
 
-$count = mysqli_num_rows($result);
-
-// If result matched $myusername and $mypassword, table row must be 1 row
-
-if($count == 1) {
-$_SESSION['login_user'] = $myusername;
-
-header("location: welcome.php");
-}else {
-$error = "Usuário ou Senha não são válidos!";
-}
+            // If result matched $myusername and $mypassword, table row must be 1 row
+            if ($count == 1) {
+                $_SESSION['login_user'] = $myusername;
+                header("location: welcome.php");
+            } else {
+                $error = "Usuário ou Senha não são válidos!";
+            }
+        } else {
+            $error = "Erro na consulta ao banco de dados!";
+        }
 
 }
 ?>

@@ -1,5 +1,28 @@
 <?php
-   include('../session.php');
+include('../session.php');
+include('../config.php');
+
+$con = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+if (!$con) {
+    die('Não foi possível conectar: ' . mysqli_error($con));
+}
+mysqli_select_db($con, DB_DATABASE);
+
+// Supondo que você tenha o ID do atleta, round e heat disponíveis
+$atleta_id = 1; // Substitua pelo ID do atleta real
+$round = 1; // Substitua pelo round real
+$heat = 1; // Substitua pelo heat real
+
+$sql = "SELECT somatorio FROM baterias WHERE atleta = $atleta_id AND round = $round AND heat = $heat";
+$result = mysqli_query($con, $sql);
+$row = mysqli_fetch_assoc($result);
+
+$somatorio = isset($row['somatorio']) ? (float)$row['somatorio'] : 0.00;
+
+mysqli_close($con);
+?>
+
+<td class=xl95 style='border-left:none'><?php echo number_format($somatorio, 2, ',', '.'); ?></td>
 ?>
 
 <html xmlns:v="urn:schemas-microsoft-com:vml"
@@ -7,20 +30,20 @@
       xmlns:x="urn:schemas-microsoft-com:office:excel"
       xmlns="http://www.w3.org/TR/REC-html40">
 
-    <head>
-        <meta http-equiv=Content-Type content="text/html; charset=windows-1252">
-            <meta name=ProgId content=Excel.Sheet>
-                <meta name=Generator content="Microsoft Excel 12">
-                    <link id=Main-File rel=Main-File href="../rounds.html">
-                        <link rel=File-List href=filelist.xml>
-                            <!--[if !mso]>
-                            <style>
-                            v\:* {behavior:url(#default#VML);}
-                            o\:* {behavior:url(#default#VML);}
-                            x\:* {behavior:url(#default#VML);}
-                            .shape {behavior:url(#default#VML);}
-                            </style>
-                            <![endif]-->
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+    <meta name=ProgId content=Excel.Sheet>
+    <meta name=Generator content="Microsoft Excel 12">
+    <link id=Main-File rel=Main-File href="../rounds.html">
+    <link rel=File-List href=filelist.xml>
+    <!--[if !mso]>
+            <style>
+            v\:* {behavior:url(#default#VML);}
+            o\:* {behavior:url(#default#VML);}
+            x\:* {behavior:url(#default#VML);}
+            .shape {behavior:url(#default#VML);}
+            </style>
+            <![endif]-->
                             <title>RSK SC ABRIL 2019</title>
                             <link rel=Stylesheet href=stylesheet.css>
                                 <style>
@@ -853,7 +876,8 @@
                                                                                                                                                         <td rowspan=2 class=xl86 style='border-bottom:.5pt solid black'>1</td>
                                                                                                                                                         <td class=xl113 style='border-left:none'>
                                                                                                                                                             <?php
-                                                                                                                                                                    mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                                    $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                                     $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=1";
                                                                                                                                                                     $result = mysqli_query($db, $sql);
                                                                                                                                                                     while ($row = mysqli_fetch_array($result)) {           
@@ -892,7 +916,8 @@
                                                                                                                                                     <td class=xl65>&nbsp;</td>
                                                                                                                                                     <td class=xl113 style='border-top:none;border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                                    mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                                    $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                                     $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=2";
                                                                                                                                                                     $result = mysqli_query($db, $sql);
                                                                                                                                                                     while ($row = mysqli_fetch_array($result)) {           
@@ -956,7 +981,8 @@
                                                                                                                                                     <td rowspan=2 class=xl86 style='border-bottom:.5pt solid black'>2</td>
                                                                                                                                                     <td class=xl113 style='border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=3";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -993,7 +1019,8 @@
                                                                                                                                                     <td class=xl65>&nbsp;</td>
                                                                                                                                                     <td class=xl113 style='border-top:none;border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=4";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1057,7 +1084,8 @@
                                                                                                                                                     <td rowspan=2 class=xl86 style='border-bottom:.5pt solid black'>3</td>
                                                                                                                                                     <td class=xl113 style='border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=5";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1094,7 +1122,8 @@
                                                                                                                                                     <td class=xl65>&nbsp;</td>
                                                                                                                                                     <td class=xl113 style='border-top:none;border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=6";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1158,7 +1187,8 @@
                                                                                                                                                     <td rowspan=2 class=xl86 style='border-bottom:.5pt solid black'>4</td>
                                                                                                                                                     <td class=xl113 style='border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=7";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1195,7 +1225,8 @@
                                                                                                                                                     <td class=xl65>&nbsp;</td>
                                                                                                                                                     <td class=xl113 style='border-top:none;border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=8";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1249,7 +1280,8 @@
                                                                                                                                                     <td rowspan=2 class=xl86 style='border-bottom:.5pt solid black'>5</td>
                                                                                                                                                     <td class=xl113 style='border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=9";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1283,7 +1315,8 @@
                                                                                                                                                     <td class=xl65>&nbsp;</td>
                                                                                                                                                     <td class=xl113 style='border-top:none;border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=10";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1334,7 +1367,8 @@
                                                                                                                                                     <td rowspan=2 class=xl86 style='border-bottom:.5pt solid black'>6</td>
                                                                                                                                                     <td class=xl113 style='border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=11";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1370,7 +1404,8 @@
                                                                                                                                                     <td class=xl65>&nbsp;</td>
                                                                                                                                                     <td class=xl113 style='border-top:none;border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=12";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1421,7 +1456,8 @@
                                                                                                                                                     <td rowspan=2 class=xl86 style='border-bottom:.5pt solid black'>7</td>
                                                                                                                                                     <td class=xl113 style='border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=13";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1458,7 +1494,8 @@
                                                                                                                                                     <td class=xl65>&nbsp;</td>
                                                                                                                                                     <td class=xl113 style='border-top:none;border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=14";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1508,7 +1545,8 @@
                                                                                                                                                     <td rowspan=2 class=xl86 style='border-bottom:.5pt solid black'>8</td>
                                                                                                                                                     <td class=xl113 style='border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=15";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           
@@ -1545,7 +1583,8 @@
                                                                                                                                                     <td class=xl65>&nbsp;</td>
                                                                                                                                                     <td class=xl113 style='border-top:none;border-left:none'>
                                                                                                                                                         <?php
-                                                                                                                                                            mysqli_select_db($db, "ajax_demo");
+                                                                                                                                                            $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                                                                                                                                                            mysqli_select_db($db, DB_DATABASE);
                                                                                                                                                             $sql = "SELECT t2.nome FROM (atletas as t2, sorteio_round1 as t1) WHERE t2.id_atletas=t1.atleta AND t1.resultado=16";
                                                                                                                                                             $result = mysqli_query($db, $sql);
                                                                                                                                                             while ($row = mysqli_fetch_array($result)) {           

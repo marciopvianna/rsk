@@ -1,5 +1,6 @@
 <?php
-   include('../session.php');
+include('session.php');
+include('config.php');
    
    //whether ip is from share internet
 if (!empty($_SERVER['HTTP_CLIENT_IP']))   
@@ -62,12 +63,12 @@ else
         <tbody>
         <?php
         
-        $con = mysqli_connect('localhost', 'delgrande', 'dege01', 'marcio');
+        $con = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
         if (!$con) {
             die('Não foi possível conectar: ' . mysqli_error($con));
         }
-        mysqli_select_db($con, "ajax_demo");
-//        $sql = "SELECT * FROM notas WHERE juiz='$login_session' ORDER BY id_nota DESC";
+        mysqli_select_db($con, DB_DATABASE);
+
         $sql = "SELECT t1.hora,t1.juiz,t1.round,t1.heat,t2.nome,t1.onda,t1.nota FROM (notas as t1, atletas as t2) WHERE t2.id_atletas=t1.atleta AND t1.juiz='$login_session' ORDER BY t1.id_nota DESC";
         $result = mysqli_query($con, $sql);
 

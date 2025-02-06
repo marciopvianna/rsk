@@ -1,23 +1,23 @@
 <?php
    include('session.php');
+   include('config.php');
    
-   //whether ip is from share internet
-if (!empty($_SERVER['HTTP_CLIENT_IP']))   
-  {
-    $ip_address = $_SERVER['HTTP_CLIENT_IP'];
-  }
+//whether ip is from share internet
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+   $ip_address = $_SERVER['HTTP_CLIENT_IP'];
+}
 //whether ip is from proxy
-elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))  
-  {
-    $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
-  }
+elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+   $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+}
 //whether ip is from remote address
-else
-  {
-    $ip_address = $_SERVER['REMOTE_ADDR'];
-  }
+else {
+   $ip_address = $_SERVER['REMOTE_ADDR'];
+}
 //echo $ip_address;
-  
+
+$last_round = isset($_SESSION['last_round']) ? $_SESSION['last_round'] : '';
+$last_heat = isset($_SESSION['last_heat']) ? $_SESSION['last_heat'] : '';
 ?>
 
 <html>
@@ -56,7 +56,43 @@ else
             }
 
             th {text-align: left;}
-        </style>
+      </style>
+
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script>
+        $(document).ready(function() {
+            $('#round, #heat').on('change', function() {
+                var round = $('#round').val();
+                var heat = $('#heat').val();
+                if (round && heat) {
+                    $.ajax({
+                        url: 'get_atletas.php',
+                        type: 'POST',
+                        data: {round: round, heat: heat},
+                        success: function(data) {
+                            $('#atleta').html(data);
+                        }
+                    });
+                }
+            });
+
+            $('#atleta').on('change', function() {
+                var round = $('#round').val();
+                var heat = $('#heat').val();
+                var atleta = $('#atleta').val();
+                if (round && heat && atleta) {
+                    $.ajax({
+                        url: 'get_ultima_onda.php',
+                        type: 'POST',
+                        data: {round: round, heat: heat, atleta: atleta},
+                        success: function(data) {
+                            $('#onda').val(data);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
       
    </head>
      
@@ -73,41 +109,25 @@ else
             <div style = "margin:30px">
                
                <form action = "envio_nota.php" method = "post">
-                    <input type="hidden" name="juiz" required class="box" value='<?php echo $login_session?>' readonly/>
+
+               <input type="hidden" name="juiz" required class="box" value='<?php echo $login_session?>' readonly/>
                     <input type='hidden' name='ip' required class="box" value='<?php echo $ip_address?>' />
-                    <label>round&ensp;: </label><input type="number" placeholder='numero do round' name="round" required class="box" autofocus/><br /><br />
-                    <label>heat &ensp;&ensp;: </label><input type="number" placeholder='numero do heat' name="heat" required class="box"/><br /><br />
-<!--                    <label>atleta &ensp;: </label><input type="text" placeholder='nome do surfista' name="atleta" required class="box"/><br /><br />-->
+                    <label>round&ensp;: </label><input type="number" id="round" placeholder='numero do round' name="round" value="<?php echo $last_round; ?>" required class="box" autofocus/><br /><br />
+                    <label>heat &ensp;&ensp;: </label><input type="number" id="heat" placeholder='numero do heat' name="heat" value="<?php echo $last_heat; ?>" required class="box"/><br /><br />
                     
                     <label>atleta &ensp;: </label>
-                            <select name="atleta" placeholder='escolha atleta' required class="box" type="number">
-                                <option value=""></option>
-                                <option value="1">Kbeca</option>
-                                <option value="2">Caxa</option>
-                                <option value="3">Guedera</option>
-                                <option value="4">Burns</option>
-                                <option value="5">Milho</option>
-                                <option value="6">Nariga</option>
-                                <option value="7">Vaqueiro</option>
-                                <option value="8">Kombi</option>
-                                <option value="9">Maca</option>
-                                <option value="10">Davala</option>
-                                <option value="11">Chines</option>
-                                <option value="12">Guto</option>
-                                <option value="13">Gigante</option>
-                                <option value="14">Marcio</option>
-                                <option value="15">Lingue</option>
-                                <option value="16">Drup</option>
-                            </select>
+                    <select id="atleta" name="atleta" placeholder='escolha atleta' required class="box" type="number">
+                        <option value="">Selecione o round e heat</option>
+                    </select>
                     <label>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</label>
                     <br /><br />  
                         
-                    <label>onda&ensp;&ensp;: </label><input type="number" placeholder='sequencia de ondas' name="onda" required class="box"/><br /><br />
+                    <label>onda&ensp;&ensp;: </label><input type="number" id="onda" placeholder='sequencia de ondas' name="onda" required class="box"/><br /><br />
                     <label>nota &ensp;&ensp;: </label><input type="text" placeholder='0.5 a 10 (usar ponto)' name="nota" required class="box"/><br /><br />
-                    <input type="Submit" value=" Enviar  "/><br />              
+                    <input type="Submit" value=" Enviar  "/><br />    
+
                </form>
                 
-               <!--<div style = "font-size:11px; color:#cc0000; margin-top:10px"><?php #echo $error; ?></div>-->
             </div>
          </div>	
       </div>
@@ -117,14 +137,14 @@ else
       <b>Últimas 5 notas:</b>
       <?php
         
-        $con = mysqli_connect('localhost', 'delgrande', 'dege01', 'marcio');
-        if (!$con) {
-            die('Não foi possível conectar: ' . mysqli_error($con));
+        $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+        if (!$db) {
+            die('Não foi possível conectar: ' . mysqli_error($db));
         }
-        mysqli_select_db($con, "ajax_demo");
+        mysqli_select_db($db, DB_DATABASE);
         //$sql = "SELECT * FROM notas WHERE juiz='$login_session' ORDER BY id_nota DESC LIMIT 5";
         $sql = "SELECT t1.hora,t1.juiz,t1.round,t1.heat,t2.nome,t1.onda,t1.nota FROM (notas as t1, atletas as t2) WHERE t2.id_atletas=t1.atleta AND t1.juiz='$login_session' ORDER BY t1.id_nota DESC LIMIT 5";
-        $result = mysqli_query($con, $sql);
+        $result = mysqli_query($db, $sql);
 
         echo "<table>
         <tr>
@@ -150,7 +170,7 @@ else
             echo "</tr>";
         }
         echo "</table>";
-        mysqli_close($con);
+        mysqli_close($db);
         ?>
       
       <h2><a href = "listanotas.php"><font size="3" face="bold">Todas notas lançadas</font></a></h2>
